@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hotel analysis</title>
+<meta name="description" content="One year of a 57-room hotel in the Vendée, October 2025 to September 2026, from the hotel's own systems.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Ccircle cx=%2216%22 cy=%2216%22 r=%2211%22 fill=%22none%22 stroke=%22%2326323B%22 stroke-width=%223%22/%3E%3Cpath d=%22M16 2v8M16 22v8M2 16h8M22 16h8%22 stroke=%22%23E58C7A%22 stroke-width=%224%22/%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/fonts.css">
+<link rel="stylesheet" href="css/app.css">
+<!-- Set the saved light or dark mode before the first paint; the showcase page shares the same key. -->
+<script>try { if (localStorage.getItem("hotel-theme") === "dark") document.documentElement.dataset.theme = "dark"; } catch (e) {}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to the dashboard</a>
+<div class="shell">
+  <aside class="side" aria-label="Hotel analysis">
+   <div class="side-stage">
+    <div class="side-field" id="side-field" aria-hidden="true"></div>
+    <a class="brand" href="#overview" aria-label="Hotel analysis, overview">
+      <div class="side-logo" id="side-logo"><span class="sr-only">Hotel analysis</span></div>
+    </a>
+    <nav class="nav" aria-label="Views">
+      <a href="#overview" data-view="overview"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="2"/><path d="M12 3.5v6.5M12 14v6.5M3.5 12H10M14 12h6.5"/></svg>Overview</a>
+      <a href="#rooms" data-view="rooms"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18v-7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v7M3 15h18M7 9V6h10v3"/></svg>Rooms</a>
+      <a href="#guests" data-view="guests"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c.6-3.4 2.8-5.2 5.5-5.2s4.9 1.8 5.5 5.2M16 5.5a3 3 0 0 1 0 5.6M17.5 14.3c1.7.6 2.8 2.2 3 4.7"/></svg>Guests and bookings</a>
+      <a href="#restaurant" data-view="restaurant"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3v8M5 3v5a2 2 0 0 0 4 0V3M7 11v10M16 21V3c-2.2 1.2-3 3.6-3 7v2h3"/></svg>Restaurant and menu</a>
+      <a href="#money" data-view="money"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h4"/></svg>Money in and out</a>
+      <a href="#profit" data-view="profit"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19h16M6 15l4-4 3 3 5-6M14 8h4v4"/></svg>Profit</a>
+      <a href="#trust" data-view="trust"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v5c0 4.4-3 8-7 9.5C8 19 5 15.4 5 11V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg>Data and method</a>
+    </nav>
+    <p class="side-note">Preview of an internship project. <a href="powerbi.html">The Power BI report pages</a><br>© 2026 Harsh Prajapati and Charmi Shah. All rights reserved.</p>
+   </div>
+  </aside>
+
+  <main id="main" tabindex="-1">
+    <header class="top">
+      <div class="title-block">
+        <h1 id="view-title">Overview</h1>
+        <p class="finding" id="view-finding"></p>
+      </div>
+      <div class="controls">
+        <div class="scope" role="group" aria-label="Period">
+          <button type="button" class="scope-year" id="scope-year" aria-pressed="true">Whole year</button>
+          <div class="months" id="month-chips"></div>
+        </div>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-pressed="false" aria-label="Dark mode" title="Dark mode"></button>
+      </div>
+    </header>
+    <div class="view" id="view"></div>
+  </main>
+</div>
+<div class="tip" id="tip" role="status" aria-live="polite" hidden></div>
+<p class="sr-only" id="announce" aria-live="polite"></p>
+
+<template id="tpl-overview">
+  <section class="grid overview" aria-label="Overview">
+    <article class="card hero tint-sky" id="ov-hero">
+      <h2 class="card-label" id="ov-hero-label">Estimated operating profit</h2>
+      <p class="display" id="ov-profit"></p>
+      <p class="hero-sub" id="ov-margin"></p>
+      <div class="hero-chart"><p class="hero-chart-label">Estimated profit by month</p><div class="chart" id="ov-cols"></div></div>
+      <p class="hero-note" id="ov-hero-note"></p>
+      <p class="scrawl" id="ov-scrawl"></p>
+    </article>
+    <article class="card wheel-card">
+      <div class="card-head"><h2>Choose a month on the mill wheel</h2><p class="muted">Each paddle is a month; its length is how full the hotel was.</p></div>
+      <div class="wheel-wrap"><div class="wheel-3d" id="wheel"></div></div>
+      <p class="wheel-reading" id="wheel-reading" aria-live="polite"></p>
+    </article>
+    <article class="card kpis" aria-label="Key figures">
+      <dl class="kpi-row" id="ov-kpis"></dl>
+    </article>
+    <article class="card span-8">
+      <div class="card-head"><h2>Sales and running costs by month</h2><p class="legend" id="ov-line-legend"></p></div>
+      <div class="chart" id="ov-line"></div>
+    </article>
+    <article class="card span-4 euro-card">
+      <div class="card-head"><h2 id="ov-euro-title">Where each euro of sales goes</h2></div>
+      <div id="ov-euro"></div>
+    </article>
+    <article class="card span-12 stream-card">
+      <div class="card-head"><h2>The year, month by month</h2><p class="muted">Pick a month to see its figures above.</p></div>
+      <ol class="stream" id="ov-stream"></ol>
+    </article>
+  </section>
+</template>
+
+
+<script src="js/data.js"></script>
+<script src="js/fx.js"></script>
+<script src="js/charts.js"></script>
+<script src="js/app.js"></script>
+<script src="js/views/rooms.js"></script>
+<script src="js/views/guests.js"></script>
+<script src="js/views/restaurant.js"></script>
+<script src="js/views/money.js"></script>
+<script src="js/views/profit.js"></script>
+<script src="js/views/trust.js"></script>
+</body>
+</html>
