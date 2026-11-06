@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 196" width="1280" height="196" role="img" aria-label="The year in five figures">
+  <title>The year in five figures</title>
+  <style>
+    .tile { animation: rise .9s cubic-bezier(.2, .8, .2, 1) both; }
+    .t2 { animation-delay: .12s; } .t3 { animation-delay: .24s; } .t4 { animation-delay: .36s; } .t5 { animation-delay: .48s; }
+    @keyframes rise { from { opacity: 0; transform: translateY(18px); } }
+    .bar { transform-box: fill-box; transform-origin: 0 50%; animation: grow 1.4s cubic-bezier(.2, .8, .2, 1) both; }
+    .t1 .bar { animation-delay: .5s; } .t2 .bar { animation-delay: .62s; } .t3 .bar { animation-delay: .74s; } .t4 .bar { animation-delay: .86s; } .t5 .bar { animation-delay: .98s; }
+    @keyframes grow { from { transform: scaleX(0); } }
+    .figure { font: 700 46px "Segoe UI", Helvetica, Arial, sans-serif; fill: #1F2A32; letter-spacing: -1px; }
+    .label { font: 700 16px "Segoe UI", Helvetica, Arial, sans-serif; fill: #1F2A32; }
+    .note { font: 500 14px "Segoe UI", Helvetica, Arial, sans-serif; fill: #3E4B55; }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+  </style>
+  <g class="tile t1">
+    <rect x="0" y="6" width="236" height="184" rx="20" fill="#DCEBF7"/>
+    <text class="label" x="22" y="42">Operating profit</text>
+    <text class="figure" x="20" y="100">€369K</text>
+    <text class="note" x="22" y="130">estimate, 32.6% of sales</text>
+    <rect class="bar" x="22" y="156" width="192" height="8" rx="4" fill="#4F8FC9"/>
+  </g>
+  <g class="tile t2">
+    <rect x="261" y="6" width="236" height="184" rx="20" fill="#DDF2E9"/>
+    <text class="label" x="283" y="42">Rooms occupied</text>
+    <text class="figure" x="281" y="100">38.3%</text>
+    <text class="note" x="283" y="130">over the year; June 78%</text>
+    <rect class="bar" x="283" y="156" width="192" height="8" rx="4" fill="#5DB08F"/>
+  </g>
+  <g class="tile t3">
+    <rect x="522" y="6" width="236" height="184" rx="20" fill="#FCEFD6"/>
+    <text class="label" x="544" y="42">Restaurant covers</text>
+    <text class="figure" x="542" y="100">7,068</text>
+    <text class="note" x="544" y="130">56% of them dinners</text>
+    <rect class="bar" x="544" y="156" width="192" height="8" rx="4" fill="#E3A93C"/>
+  </g>
+  <g class="tile t4">
+    <rect x="783" y="6" width="236" height="184" rx="20" fill="#FBE3DD"/>
+    <text class="label" x="805" y="42">Reservations</text>
+    <text class="figure" x="803" y="100">1,996</text>
+    <text class="note" x="805" y="130">58% booked direct</text>
+    <rect class="bar" x="805" y="156" width="192" height="8" rx="4" fill="#E58C7A"/>
+  </g>
+  <g class="tile t5">
+    <rect x="1044" y="6" width="236" height="184" rx="20" fill="#ECE7F8"/>
+    <text class="label" x="1066" y="42">Automatic checks</text>
+    <text class="figure" x="1064" y="100">1,722</text>
+    <text class="note" x="1066" y="130">every one passing</text>
+    <rect class="bar" x="1066" y="156" width="192" height="8" rx="4" fill="#9C8ADB"/>
+  </g>
+</svg>
