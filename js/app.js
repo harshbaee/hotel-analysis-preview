@@ -111,6 +111,7 @@
     document.title = `${v.title} · Hotel analysis`;
     document.querySelector(".scope").hidden = Boolean(v.noMonths);
     const host = $("view");
+    current?.destroy?.();   // stop the old view's 3D render loop, or each visit leaves one running off screen
     if (v.template) host.replaceChildren(document.getElementById(v.template).content.cloneNode(true));
     else host.innerHTML = v.html;
     host.querySelectorAll(".card").forEach((c, i) => { c.classList.add("reveal"); c.style.setProperty("--i", i); });
@@ -140,20 +141,30 @@
     if (m.profit < 0) return `Lost ${eurK(-m.profit)}`;
     return `${eurK(m.profit)} profit`;
   }
+  // Asked once: each test canvas holds a WebGL context until the browser frees it, so it is released straight away.
+  let webgl;
+  function hasWebGL() {
+    if (webgl === undefined) {
+      const gl = document.createElement("canvas").getContext("webgl2");
+      webgl = Boolean(gl);
+      gl?.getExtension("WEBGL_lose_context")?.loseContext();
+    }
+    return webgl;
+  }
   function mountOverview(host) {
     const q = (id) => host.querySelector(`#${id}`);
     // The showcase's 3D wheel (js/fx.js); the flat SVG wheel stays for computers without WebGL.
     const onPick = (i) => pick(state.month === i ? null : i);
     let w;
     try {
-      if (!window.FX || !document.createElement("canvas").getContext("webgl2")) throw new Error("no WebGL");
+      if (!window.FX || !hasWebGL()) throw new Error("no WebGL");
       const wheel3d = FX.mountWheel(q("wheel"), { values: M.map((m) => m.occupancy), colour: bandColour, frame: FX.THEMES[theme()].frame,
         picked: null, onPick, still: reduced.matches, distance: 5.6 });
-      w = { set(i) { wheel3d.update({ picked: i }); }, theme(t) { wheel3d.update({ frame: FX.THEMES[t].frame }); } };
+      w = { set(i) { wheel3d.update({ picked: i }); }, theme(t) { wheel3d.update({ frame: FX.THEMES[t].frame }); }, destroy() { wheel3d.unmount(); } };
     } catch {
       const flat = Charts.wheel(q("wheel"), { values: M.map((m) => m.occupancy), labels: SHORT, colour: bandColour,
         describe: (i) => `${LONG[i]}: ${pct(M[i].occupancy, 0)} of rooms occupied`, onPick });
-      w = { set(i) { flat.set(i, i === null ? pct(T.occupancy) : pct(M[i].occupancy, 0), i === null ? "full, whole year" : LONG[i]); }, theme() {} };
+      w = { set(i) { flat.set(i, i === null ? pct(T.occupancy) : pct(M[i].occupancy, 0), i === null ? "full, whole year" : LONG[i]); }, theme() {}, destroy() {} };
     }
     const kpiDefs = [
       ["Sales without VAT", (s) => s.sales, eur, "sales"],
@@ -193,6 +204,7 @@
 
     return {
       theme(t) { w.theme(t); },
+      destroy() { w.destroy(); },
       update(i) {
         const s = i === null ? year : M[i];
         q("ov-hero-label").textContent = i === null ? "Estimated operating profit, whole year" : `Estimated operating profit, ${LONG[i]}`;
