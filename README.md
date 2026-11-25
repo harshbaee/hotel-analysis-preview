@@ -144,7 +144,7 @@ only, with the hotel's name withheld.
       the dish cost estimates and the automatic checks.
     </td>
     <td width="50%" valign="top">
-      <b>Charmi Shah</b><br>
+      <a href="https://github.com/charmishahh"><b>Charmi Shah</b></a><br>
       <sub>Front end and design</sub><br><br>
       The Power BI report's design, the logo and visual identity, the presentation, the dashboard website and the showcase page.
     </td>
